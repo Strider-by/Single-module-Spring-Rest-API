@@ -38,6 +38,13 @@ public class CertificatesController {
         return certificatesService.createCertificate(certificateDto);
     }
 
+    @RequestMapping(value="/{id}", method=RequestMethod.DELETE, produces="application/json")
+    public  @ResponseBody void deleteCertificate(@RequestParam long id) {
+        // todo: return json with error if certificate wasn't found
+        certificatesService.deleteCertificate(id);
+    }
+
+
 
 
 }

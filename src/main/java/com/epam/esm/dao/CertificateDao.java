@@ -90,8 +90,8 @@ public class CertificateDao {
         return null;
     }
 
-    public  void delete(long id) {
-        jdbcTemplate.update(DELETE_INSTANCE, id);
+    public boolean delete(long id) {
+        return jdbcTemplate.update(DELETE_INSTANCE, id) == 1;
     }
 
 

@@ -1,7 +1,9 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.controller.api.CertificatesController;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.entity.Certificate;
+import com.epam.esm.service.CertificatesService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -37,6 +39,16 @@ public class BeansConfiguration {
     @Bean
     public CertificateDao certificateDao(JdbcTemplate jdbcTemplate) {
         return new CertificateDao(jdbcTemplate);
+    }
+
+    @Bean
+    public CertificatesController certificatesController(CertificatesService certificatesService) {
+        return new CertificatesController(certificatesService);
+    }
+
+    @Bean
+    public CertificatesService certificatesService(CertificateDao dao) {
+        return new CertificatesService(dao);
     }
 
 //    @Bean

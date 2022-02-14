@@ -38,8 +38,8 @@ public class CertificatesService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteCertificate(long id) {
-        certificateDao.delete(id);
+    public boolean deleteCertificate(long id) {
+        return certificateDao.delete(id);
     }
 
 }
