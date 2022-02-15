@@ -39,9 +39,8 @@ public class CertificatesController {
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.DELETE, produces="application/json")
-    public  @ResponseBody void deleteCertificate(@RequestParam long id) {
-        // todo: return json with error if certificate wasn't found
-        certificatesService.deleteCertificate(id);
+    public  @ResponseBody boolean deleteCertificate(@PathVariable long id) {
+        return certificatesService.deleteCertificate(id);
     }
 
 

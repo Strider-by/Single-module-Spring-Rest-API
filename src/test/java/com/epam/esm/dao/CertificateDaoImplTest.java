@@ -7,7 +7,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-public class CertificateDaoTest extends TestCase {
+public class CertificateDaoImplTest extends TestCase {
 
     public void testCreate() throws Exception {
 //        CertificatesController controller = new CertificatesController();

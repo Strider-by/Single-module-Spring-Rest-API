@@ -1,12 +1,15 @@
-package com.epam.esm.dao;
+package com.epam.esm.dao.config;
 
 import com.epam.esm.controller.api.CertificatesController;
-import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.entity.Certificate;
+import com.epam.esm.controller.api.TagsController;
+import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.impl.CertificateDaoImpl;
+import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.service.CertificatesService;
+import com.epam.esm.service.TagsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -31,6 +34,11 @@ public class BeansConfiguration {
         return new JdbcTemplate(dataSource);
     }
 
+    @Bean
+    public TagsService tagsService(TagDao tagDao) {
+        return  new TagsService(tagDao);
+    }
+
 //    @Bean
 //    public JdbcTemplate jdbcTemplate() {
 //        return new JdbcTemplate(ProductionDatasourceConfig.mysqlDataSource());
@@ -38,8 +46,23 @@ public class BeansConfiguration {
 
     @Bean
     public CertificateDao certificateDao(JdbcTemplate jdbcTemplate) {
-        return new CertificateDao(jdbcTemplate);
+        return new CertificateDaoImpl(jdbcTemplate);
     }
+
+    @Bean
+    public TagDao tagDao(JdbcTemplate jdbcTemplate) {
+        return new TagDaoImpl(jdbcTemplate);
+    }
+
+    @Bean
+    public CertificateDaoImpl certificateDaoImpl(JdbcTemplate jdbcTemplate) {
+        return new CertificateDaoImpl(jdbcTemplate);
+    }
+
+//    @Bean
+//    public TagDaoImpl tagDao(JdbcTemplate jdbcTemplate) {
+//        return new TagDaoImpl(jdbcTemplate);
+//    }
 
     @Bean
     public CertificatesController certificatesController(CertificatesService certificatesService) {
@@ -47,7 +70,12 @@ public class BeansConfiguration {
     }
 
     @Bean
-    public CertificatesService certificatesService(CertificateDao dao) {
+    public TagsController tagsController(TagsService tagsService) {
+        return new TagsController(tagsService);
+    }
+
+    @Bean
+    public CertificatesService certificatesService(CertificateDaoImpl dao) {
         return new CertificatesService(dao);
     }
 

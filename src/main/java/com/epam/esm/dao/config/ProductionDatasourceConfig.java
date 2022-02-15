@@ -1,4 +1,4 @@
-package com.epam.esm.dao;
+package com.epam.esm.dao.config;
 
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.springframework.context.annotation.*;

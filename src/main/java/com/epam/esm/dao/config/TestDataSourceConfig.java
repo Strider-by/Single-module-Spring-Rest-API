@@ -1,4 +1,4 @@
-package com.epam.esm.dao;
+package com.epam.esm.dao.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
