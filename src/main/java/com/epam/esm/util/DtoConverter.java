@@ -1,16 +1,18 @@
 package com.epam.esm.util;
 
 import com.epam.esm.dto.CertificateDto;
-//import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 
-import java.util.Date;
 import java.util.stream.Collectors;
 
 public class DtoConverter {
 
     public static Certificate toCertificate(CertificateDto dto) {
+
+        if (dto == null) {
+            return null;
+        }
 
         Certificate certificate = new Certificate();
         certificate.setName(dto.getName());
@@ -28,6 +30,10 @@ public class DtoConverter {
     }
 
     public static CertificateDto toCertificateDto(Certificate certificate) {
+
+        if (certificate == null) {
+            return null;
+        }
 
         CertificateDto dto = new CertificateDto();
         dto.setId(certificate.getId());
@@ -50,8 +56,5 @@ public class DtoConverter {
         tag.setName(string);
         return tag;
     }
-//
-//    public static TagDto toTagDto(Tag tag) {
-//        return new TagDto(tag.getName());
-//    }
+
 }

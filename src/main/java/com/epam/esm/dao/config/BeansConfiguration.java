@@ -3,8 +3,10 @@ package com.epam.esm.dao.config;
 import com.epam.esm.controller.api.CertificatesController;
 import com.epam.esm.controller.api.TagsController;
 import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.dao.CrossEntityDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.CertificateDaoImpl;
+import com.epam.esm.dao.impl.CrossEntityDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.service.CertificatesService;
 import com.epam.esm.service.TagsService;
@@ -77,6 +79,11 @@ public class BeansConfiguration {
     @Bean
     public CertificatesService certificatesService(CertificateDaoImpl dao) {
         return new CertificatesService(dao);
+    }
+
+    @Bean
+    public CrossEntityDao crossEntityDao(JdbcTemplate jdbcTemplate) {
+        return new CrossEntityDaoImpl(jdbcTemplate);
     }
 
 //    @Bean
