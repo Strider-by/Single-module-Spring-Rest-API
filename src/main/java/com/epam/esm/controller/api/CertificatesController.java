@@ -1,5 +1,6 @@
 package com.epam.esm.controller.api;
 
+import com.epam.esm.controller.api.exception.BadPatchRequestException;
 import com.epam.esm.controller.api.exception.CertificateNotFoundException;
 import com.epam.esm.controller.api.exception.Message;
 import com.epam.esm.dto.CertificateDto;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/certificates")
@@ -55,6 +57,24 @@ public class CertificatesController {
         return new Message(HttpStatus.OK, String.format("Certificate %d has been deleted", id));
     }
 
+    @RequestMapping(value="/{id}", method=RequestMethod.PATCH, produces="application/json")
+    public  @ResponseBody Message updateCertificate(
+            @PathVariable("id") long id,
+            @RequestBody Map<String, String> params) {
+        System.out.println("id: " + id);
+        System.out.println("cretificatw: " + certificateDto);
+        if (certificateDto.getId() == null) {
+            throw new BadPatchRequestException();
+        }
+
+        boolean resourceIsFound = certificatesService.updateCertificate(certificateDto);
+        if (!resourceIsFound) {
+            throw new CertificateNotFoundException(certificateDto.getId());
+        }
+
+        return new Message(HttpStatus.OK, String.format("Certificate %d has been updated", certificateDto.getId()));
+    }
+
 
 
     @ExceptionHandler(CertificateNotFoundException.class)
@@ -62,6 +82,12 @@ public class CertificatesController {
     public Message certificateNotFound(CertificateNotFoundException ex) {
         long id = ex.getCertificateId();
         return new Message(HttpStatus.NOT_FOUND, String.format("Certificate %d can not be found", id));
+    }
+
+    @ExceptionHandler(BadPatchRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Message noIdFound(CertificateNotFoundException ex) {
+        return new Message(HttpStatus.BAD_REQUEST, "Request must have an id parameter to be processed");
     }
 
 

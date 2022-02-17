@@ -21,21 +21,24 @@ public class CertificatesService {
     public CertificateDto createCertificate(CertificateDto dto) {
         Certificate certificate = DtoConverter.toCertificate(dto);
         certificate.affixCreateTimestamp();
-        long certificateId = certificateDao.create(certificate);
+        long certificateId = certificateDao.createCertificate(certificate, dto.getDescription());
         certificate.setId(certificateId);
 
         return DtoConverter.toCertificateDto(certificate);
     }
 
     public CertificateDto getCertificate(long id) {
-        Certificate certificate = certificateDao.getById(id);
-        return DtoConverter.toCertificateDto(certificate);
+        return certificateDao.getCertificateById(id);
     }
 
     public List<CertificateDto> getAllCertificates() {
-        return certificateDao.getAll().stream()
-                .map(DtoConverter::toCertificateDto)
-                .collect(Collectors.toList());
+        return certificateDao.getAllCertificates();
+    }
+
+    public boolean updateCertificate(CertificateDto dto) {
+        //certificateDao.update()
+        System.out.println(dto);
+        return true;
     }
 
     public boolean deleteCertificate(long id) {

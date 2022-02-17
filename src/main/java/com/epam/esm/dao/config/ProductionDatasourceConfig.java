@@ -15,7 +15,7 @@ public class ProductionDatasourceConfig {
     public static DataSource mysqlDataSource() {
 
         PoolProperties p = new PoolProperties();
-        p.setUrl("jdbc:mysql://localhost:3306/gift_certificates");
+        p.setUrl("jdbc:mysql://localhost:3306/gift_certificates?allowMultiQueries=true");
         p.setDriverClassName("com.mysql.cj.jdbc.Driver");
         p.setUsername("root");
         p.setPassword("AEge101");

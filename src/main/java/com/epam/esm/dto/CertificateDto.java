@@ -1,14 +1,10 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.entity.Tag;
-import org.springframework.stereotype.Component;
-
-import java.util.Date;
 import java.util.List;
 
 public class CertificateDto {
 
-    private long id;
+    private Long id;
     private String name;
     private List<String> description;
     private int price;
@@ -16,11 +12,11 @@ public class CertificateDto {
     private String created;
     private String lastUpdate;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

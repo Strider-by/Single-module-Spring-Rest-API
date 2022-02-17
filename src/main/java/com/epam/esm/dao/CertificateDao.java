@@ -1,5 +1,6 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.entity.Certificate;
 
 import java.util.List;
@@ -7,11 +8,11 @@ import java.util.Map;
 
 public interface CertificateDao {
 
-    long create(Certificate certificate);
+    long createCertificate(Certificate certificate, List<String> description);
 
-    Certificate getById(long id);
+    CertificateDto getCertificateById(long id);
 
-    List<Certificate> getAll();
+    List<CertificateDto> getAllCertificates();
 
     Certificate update(Map<String, Object> nameValuePairs);
 

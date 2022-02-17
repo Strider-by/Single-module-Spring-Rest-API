@@ -6,7 +6,6 @@ import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.CrossEntityDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.CertificateDaoImpl;
-import com.epam.esm.dao.impl.CrossEntityDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.service.CertificatesService;
 import com.epam.esm.service.TagsService;
@@ -81,10 +80,10 @@ public class BeansConfiguration {
         return new CertificatesService(dao);
     }
 
-    @Bean
-    public CrossEntityDao crossEntityDao(JdbcTemplate jdbcTemplate) {
-        return new CrossEntityDaoImpl(jdbcTemplate);
-    }
+//    @Bean
+//    public CrossEntityDao crossEntityDao(JdbcTemplate jdbcTemplate) {
+//        return new CrossEntityDaoImpl(jdbcTemplate);
+//    }
 
 //    @Bean
 //    public CertificateDto certificateDto() {
