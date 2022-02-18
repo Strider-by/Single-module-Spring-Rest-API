@@ -11,7 +11,6 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-//import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.ResultSet;
@@ -84,19 +83,20 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    @Transactional
     public CertificateDto createCertificate(Certificate certificate, List<String> tagsNames) {
-        jdbcTemplate.update(CREATE_CERTIFICATE,
-                certificate.getName(),
-                certificate.getPrice(),
-                certificate.getDuration(),
-                certificate.getCreateDate(),
-                certificate.getLastUpdateDate()
-        );
+        return transactionTemplate.execute(status -> {
+            jdbcTemplate.update(CREATE_CERTIFICATE,
+                    certificate.getName(),
+                    certificate.getPrice(),
+                    certificate.getDuration(),
+                    certificate.getCreateDate(),
+                    certificate.getLastUpdateDate()
+            );
 
-        long certificateId = jdbcTemplate.queryForObject(GET_LAST_CREATED_ID, Long.class);
-        createAndBindTags(certificateId, tagsNames);
-        return getCertificateById(certificateId);
+            long certificateId = jdbcTemplate.queryForObject(GET_LAST_CREATED_ID, Long.class);
+            createAndBindTags(certificateId, tagsNames);
+            return getCertificateById(certificateId);
+        });
     }
 
     @Override
@@ -123,9 +123,9 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    @Transactional
     public List<CertificateDto> getAllCertificates() {
 
+        return transactionTemplate.execute(status -> {
         TreeMap<Long, CertificateDto> certificateDtos = jdbcTemplate.query(GET_ALL_CERTIFICATES, new CertificateRowMapper()).stream()
                 .map(DtoConverter::toCertificateDto)
                 .collect(Collectors.toMap(certificate -> certificate.getId(), Function.identity(), (o1, o2) -> o1, TreeMap::new));
@@ -144,49 +144,50 @@ public class CertificateDaoImpl implements CertificateDao {
                 .map(Map::values)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+        });
 
     }
 
     @Override
-    @Transactional
     public CertificateDto update(CertificateUpdateDto dto) {
 
-        if (!checkIfCertificateExists(dto.getId())) {
-            return null;
-        }
+        return transactionTemplate.execute(status -> {
+            if (!checkIfCertificateExists(dto.getId())) {
+                return null;
+            }
 
-        String name;
-        Integer price;
-        Integer duration;
-        Date lastUpdate;
-        List<String> parametersToChange = new ArrayList<>();
-        if (Objects.nonNull(name = dto.getName())) parametersToChange.add("name");
-        if (Objects.nonNull(price = dto.getPrice())) parametersToChange.add("price");
-        if (Objects.nonNull(duration = dto.getDuration())) parametersToChange.add("duration");
-        parametersToChange.add("last_update_date");
-        lastUpdate = dto.getLastUpdate();
-        String queryString = buildUpdateCertificateQuery(parametersToChange.toArray(new String[0]));
-        Object[] params = Stream.of(name, price, duration, lastUpdate, dto.getId())
-                .filter(Objects::nonNull)
-                .toArray();
+            String name;
+            Integer price;
+            Integer duration;
+            Date lastUpdate;
+            List<String> parametersToChange = new ArrayList<>();
+            if (Objects.nonNull(name = dto.getName())) parametersToChange.add("name");
+            if (Objects.nonNull(price = dto.getPrice())) parametersToChange.add("price");
+            if (Objects.nonNull(duration = dto.getDuration())) parametersToChange.add("duration");
+            parametersToChange.add("last_update_date");
+            lastUpdate = dto.getLastUpdate();
+            String queryString = buildUpdateCertificateQuery(parametersToChange.toArray(new String[0]));
+            Object[] params = Stream.of(name, price, duration, lastUpdate, dto.getId())
+                    .filter(Objects::nonNull)
+                    .toArray();
 
-        jdbcTemplate.update(queryString, params);
-        replaceTagsOnCertificateUpdate(dto);
-        return getCertificateById(dto.getId());
+            jdbcTemplate.update(queryString, params);
+            replaceTagsOnCertificateUpdate(dto);
+            return getCertificateById(dto.getId());
+        });
     }
 
-    @Transactional
+    @Override
+    public boolean delete(long id) {
+        return jdbcTemplate.update(DELETE_CERTIFICATE, id) == 1;
+    }
+
     private void replaceTagsOnCertificateUpdate(CertificateUpdateDto dto) {
         List<String> tags = dto.getDescription();
         if (Objects.nonNull(tags)) {
             jdbcTemplate.update(DELETE_TAGS_TO_CERTIFICATE_BOUNDS, dto.getId());
             createAndBindTags(dto.getId(), tags);
         }
-    }
-
-    @Override
-    public boolean delete(long id) {
-        return jdbcTemplate.update(DELETE_CERTIFICATE, id) == 1;
     }
 
     private void createAndBindTags(long certificateId, List<String> tagsNames) {
