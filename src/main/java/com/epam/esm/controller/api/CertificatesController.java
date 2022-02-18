@@ -1,6 +1,5 @@
 package com.epam.esm.controller.api;
 
-import com.epam.esm.controller.api.exception.BadPatchRequestException;
 import com.epam.esm.controller.api.exception.CertificateNotFoundException;
 import com.epam.esm.controller.api.exception.Message;
 import com.epam.esm.dto.CertificateDto;
@@ -82,11 +81,11 @@ public class CertificatesController {
         return new Message(HttpStatus.NOT_FOUND, String.format("Certificate %d can not be found", id));
     }
 
-    @ExceptionHandler(BadPatchRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Message noIdFound(CertificateNotFoundException ex) {
-        return new Message(HttpStatus.BAD_REQUEST, "Request must have an id parameter to be processed");
-    }
+//    @ExceptionHandler(BadPatchRequestException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public Message noIdFound(CertificateNotFoundException ex) {
+//        return new Message(HttpStatus.BAD_REQUEST, "Request must have an id parameter to be processed");
+//    }
 
 
 

@@ -1,9 +1,11 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.Tag;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+//@Component
 public interface TagDao {
 
     boolean create(String name);

@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+//import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
+@Component
 public class CertificateDaoImpl implements CertificateDao {
 
     private static final String CHECK_IF_CERTIFICATE_EXISTS =
@@ -69,12 +72,19 @@ public class CertificateDaoImpl implements CertificateDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private TransactionTemplate transactionTemplate;
 
-    public CertificateDaoImpl(JdbcTemplate jdbcTemplate) {
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
+        this.transactionTemplate = transactionTemplate;
+    }
+
     @Override
+    @Transactional
     public CertificateDto createCertificate(Certificate certificate, List<String> tagsNames) {
         jdbcTemplate.update(CREATE_CERTIFICATE,
                 certificate.getName(),
@@ -113,6 +123,7 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
+    @Transactional
     public List<CertificateDto> getAllCertificates() {
 
         TreeMap<Long, CertificateDto> certificateDtos = jdbcTemplate.query(GET_ALL_CERTIFICATES, new CertificateRowMapper()).stream()
@@ -137,6 +148,7 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
+    @Transactional
     public CertificateDto update(CertificateUpdateDto dto) {
 
         if (!checkIfCertificateExists(dto.getId())) {
@@ -163,6 +175,7 @@ public class CertificateDaoImpl implements CertificateDao {
         return getCertificateById(dto.getId());
     }
 
+    @Transactional
     private void replaceTagsOnCertificateUpdate(CertificateUpdateDto dto) {
         List<String> tags = dto.getDescription();
         if (Objects.nonNull(tags)) {

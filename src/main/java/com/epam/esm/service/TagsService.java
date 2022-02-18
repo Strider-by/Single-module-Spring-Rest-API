@@ -2,10 +2,12 @@ package com.epam.esm.service;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class TagsService {
 
     private TagDao tagDao;

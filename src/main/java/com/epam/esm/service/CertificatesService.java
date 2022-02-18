@@ -6,12 +6,14 @@ import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.util.DtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class CertificatesService {
 
     @Autowired
