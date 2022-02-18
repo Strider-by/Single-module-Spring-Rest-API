@@ -3,7 +3,6 @@ package com.epam.esm.dao.config;
 import com.epam.esm.controller.api.CertificatesController;
 import com.epam.esm.controller.api.TagsController;
 import com.epam.esm.dao.CertificateDao;
-import com.epam.esm.dao.CrossEntityDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.CertificateDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
@@ -40,10 +39,6 @@ public class BeansConfiguration {
         return  new TagsService(tagDao);
     }
 
-//    @Bean
-//    public JdbcTemplate jdbcTemplate() {
-//        return new JdbcTemplate(ProductionDatasourceConfig.mysqlDataSource());
-//    }
 
     @Bean
     public CertificateDao certificateDao(JdbcTemplate jdbcTemplate) {
@@ -60,11 +55,6 @@ public class BeansConfiguration {
         return new CertificateDaoImpl(jdbcTemplate);
     }
 
-//    @Bean
-//    public TagDaoImpl tagDao(JdbcTemplate jdbcTemplate) {
-//        return new TagDaoImpl(jdbcTemplate);
-//    }
-
     @Bean
     public CertificatesController certificatesController(CertificatesService certificatesService) {
         return new CertificatesController(certificatesService);
@@ -79,15 +69,5 @@ public class BeansConfiguration {
     public CertificatesService certificatesService(CertificateDaoImpl dao) {
         return new CertificatesService(dao);
     }
-
-//    @Bean
-//    public CrossEntityDao crossEntityDao(JdbcTemplate jdbcTemplate) {
-//        return new CrossEntityDaoImpl(jdbcTemplate);
-//    }
-
-//    @Bean
-//    public CertificateDto certificateDto() {
-//        return new CertificateDto();
-//    }
 
 }

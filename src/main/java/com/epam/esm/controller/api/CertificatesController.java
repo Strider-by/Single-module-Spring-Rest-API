@@ -4,11 +4,14 @@ import com.epam.esm.controller.api.exception.BadPatchRequestException;
 import com.epam.esm.controller.api.exception.CertificateNotFoundException;
 import com.epam.esm.controller.api.exception.Message;
 import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.service.CertificatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,21 +61,16 @@ public class CertificatesController {
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.PATCH, produces="application/json")
-    public  @ResponseBody Message updateCertificate(
+    public  @ResponseBody CertificateDto updateCertificate(
             @PathVariable("id") long id,
-            @RequestBody Map<String, String> params) {
-        System.out.println("id: " + id);
-        System.out.println("cretificatw: " + certificateDto);
-        if (certificateDto.getId() == null) {
-            throw new BadPatchRequestException();
+            @RequestBody MultiValueMap<String, String> params) {
+
+        CertificateDto certificateDto = certificatesService.updateCertificate(id, params);
+        if (certificateDto == null) {
+            throw new CertificateNotFoundException(id);
         }
 
-        boolean resourceIsFound = certificatesService.updateCertificate(certificateDto);
-        if (!resourceIsFound) {
-            throw new CertificateNotFoundException(certificateDto.getId());
-        }
-
-        return new Message(HttpStatus.OK, String.format("Certificate %d has been updated", certificateDto.getId()));
+        return certificateDto;
     }
 
 

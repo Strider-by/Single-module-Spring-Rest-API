@@ -1,5 +1,5 @@
-package com.epam.esm.controller.api.exception;
-
-public class BadPatchRequestException extends RuntimeException {
-
-}
+//package com.epam.esm.controller.api.exception;
+//
+//public class BadPatchRequestException extends RuntimeException {
+//
+//}

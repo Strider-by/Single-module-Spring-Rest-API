@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.dto.Pair;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.util.DtoConverter;
@@ -19,6 +20,9 @@ import java.util.stream.Stream;
 
 
 public class CertificateDaoImpl implements CertificateDao {
+
+    private static final String CHECK_IF_CERTIFICATE_EXISTS =
+            "SELECT COUNT(id) FROM gift_certificate WHERE id = ? > 0";
 
     private static final String GET_CERTIFICATE =
             "SELECT * FROM gift_certificate WHERE id = ?";
@@ -49,12 +53,19 @@ public class CertificateDaoImpl implements CertificateDao {
                     + "INSERT INTO tags_to_certificates (certificate_id, tag_id) "
                     + "SELECT ?, tag.id FROM tag WHERE tag.name IN (%s);";
 
+    private static final String UPDATE_CERTIFICATE_TEMPLATE_MASK =
+            "UPDATE gift_certificate SET %s WHERE id = ?";
+
+    private static final String DELETE_TAGS_TO_CERTIFICATE_BOUNDS =
+            "DELETE FROM tags_to_certificates WHERE certificate_id = ?; ";
+
     private static final String DELETE_CERTIFICATE =
             "DELETE FROM gift_certificate WHERE id = ?";
 
+    private static final String UPDATE_FIELD_VALUE_TEMPLATE_MASK = "%s = ?";
     private static final String VALUE_MASK_IN_BRACKETS = "(?)";
     private static final String SIMPLE_VALUE_MASK = "?";
-    private static final String VALUES_DELIMITER = ", ";
+    private static final String COMMA_DELIMITER = ", ";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -63,56 +74,19 @@ public class CertificateDaoImpl implements CertificateDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-//    @Override
-//    public long create(Certificate certificate) {
-//
-//        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-//                .withTableName("gift_certificate")
-//                .usingGeneratedKeyColumns("id");
-//        Map<String, Object> parameters = new HashMap<>();
-//        parameters.put("name", certificate.getName());
-//        parameters.put("price", certificate.getPrice());
-//        parameters.put("duration", certificate.getDuration());
-//        parameters.put("create_date", certificate.getCreateDate());
-//        parameters.put("last_update_date", certificate.getLastUpdateDate());
-//        long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-//
-//        return id;
-//    }
-
     @Override
-    public long createCertificate(Certificate certificate, List<String> description) {
+    public CertificateDto createCertificate(Certificate certificate, List<String> tagsNames) {
         jdbcTemplate.update(CREATE_CERTIFICATE,
                 certificate.getName(),
                 certificate.getPrice(),
                 certificate.getDuration(),
                 certificate.getCreateDate(),
-                certificate.getLastUpdateDate());
+                certificate.getLastUpdateDate()
+        );
+
         long certificateId = jdbcTemplate.queryForObject(GET_LAST_CREATED_ID, Long.class);
-
-//        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-//                .withTableName("gift_certificate")
-//                .usingGeneratedKeyColumns("id");
-//        Map<String, Object> parameters = new HashMap<>();
-//        parameters.put("name", certificate.getName());
-//        parameters.put("price", certificate.getPrice());
-//        parameters.put("duration", certificate.getDuration());
-//        parameters.put("create_date", certificate.getCreateDate());
-//        parameters.put("last_update_date", certificate.getLastUpdateDate());
-//        long certificateId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-
-        List<String> tagsNames = description;
-
-        if (!tagsNames.isEmpty()) {
-            String createAndBoundTagsQuery = buildCreateTagsQuery(tagsNames.size());
-            Object[] arguments = Stream.of(tagsNames.toArray(), new Object[] {certificateId}, tagsNames.toArray())
-                    .flatMap(Arrays::stream)
-                    .toArray();
-            System.out.println(Arrays.toString(arguments));
-            jdbcTemplate.update(createAndBoundTagsQuery, arguments);
-        }
-
-        return certificateId;
+        createAndBindTags(certificateId, tagsNames);
+        return getCertificateById(certificateId);
     }
 
     @Override
@@ -132,6 +106,10 @@ public class CertificateDaoImpl implements CertificateDao {
         } catch (IncorrectResultSizeDataAccessException ex) {
             return null;
         }
+    }
+
+    private boolean checkIfCertificateExists(long id) {
+        return jdbcTemplate.queryForObject(CHECK_IF_CERTIFICATE_EXISTS, Boolean.class, id);
     }
 
     @Override
@@ -159,9 +137,38 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public Certificate update(Map<String, Object> nameValuePairs) {
-        // todo: fix
-        return null;
+    public CertificateDto update(CertificateUpdateDto dto) {
+
+        if (!checkIfCertificateExists(dto.getId())) {
+            return null;
+        }
+
+        String name;
+        Integer price;
+        Integer duration;
+        Date lastUpdate;
+        List<String> parametersToChange = new ArrayList<>();
+        if (Objects.nonNull(name = dto.getName())) parametersToChange.add("name");
+        if (Objects.nonNull(price = dto.getPrice())) parametersToChange.add("price");
+        if (Objects.nonNull(duration = dto.getDuration())) parametersToChange.add("duration");
+        parametersToChange.add("last_update_date");
+        lastUpdate = dto.getLastUpdate();
+        String queryString = buildUpdateCertificateQuery(parametersToChange.toArray(new String[0]));
+        Object[] params = Stream.of(name, price, duration, lastUpdate, dto.getId())
+                .filter(Objects::nonNull)
+                .toArray();
+
+        jdbcTemplate.update(queryString, params);
+        replaceTagsOnCertificateUpdate(dto);
+        return getCertificateById(dto.getId());
+    }
+
+    private void replaceTagsOnCertificateUpdate(CertificateUpdateDto dto) {
+        List<String> tags = dto.getDescription();
+        if (Objects.nonNull(tags)) {
+            jdbcTemplate.update(DELETE_TAGS_TO_CERTIFICATE_BOUNDS, dto.getId());
+            createAndBindTags(dto.getId(), tags);
+        }
     }
 
     @Override
@@ -169,23 +176,28 @@ public class CertificateDaoImpl implements CertificateDao {
         return jdbcTemplate.update(DELETE_CERTIFICATE, id) == 1;
     }
 
+    private void createAndBindTags(long certificateId, List<String> tagsNames) {
+        if (!tagsNames.isEmpty()) {
+            String createAndBoundTagsQuery = buildCreateTagsQuery(tagsNames.size());
+            Object[] arguments = Stream.of(tagsNames.toArray(), new Object[]{certificateId}, tagsNames.toArray())
+                    .flatMap(Arrays::stream)
+                    .toArray();
+            System.out.println(Arrays.toString(arguments));
+            jdbcTemplate.update(createAndBoundTagsQuery, arguments);
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
+    private String buildUpdateCertificateQuery(String ... fields) {
+        String fieldsValuesPartTemplate = multiplyAndJoin(UPDATE_FIELD_VALUE_TEMPLATE_MASK, COMMA_DELIMITER, fields.length);
+        String fieldsValuesPart = String.format(fieldsValuesPartTemplate, fields);
+        String queryString = String.format(UPDATE_CERTIFICATE_TEMPLATE_MASK, fieldsValuesPart);
+        System.out.println(queryString);
+        return queryString;
+    }
 
     private String buildCreateTagsQuery(int tagsToCreate) {
-        String valuePlaceholders1 = multiplyAndJoin(VALUE_MASK_IN_BRACKETS, VALUES_DELIMITER, tagsToCreate);
-        String valuePlaceholders2 = multiplyAndJoin(SIMPLE_VALUE_MASK, VALUES_DELIMITER, tagsToCreate);
+        String valuePlaceholders1 = multiplyAndJoin(VALUE_MASK_IN_BRACKETS, COMMA_DELIMITER, tagsToCreate);
+        String valuePlaceholders2 = multiplyAndJoin(SIMPLE_VALUE_MASK, COMMA_DELIMITER, tagsToCreate);
         System.out.println(String.format(CREATE_TAGS_AND_BOUND_THEM_TO_CERTIFICATE_TEMPLATE_MASK, valuePlaceholders1, valuePlaceholders2));
         return String.format(CREATE_TAGS_AND_BOUND_THEM_TO_CERTIFICATE_TEMPLATE_MASK, valuePlaceholders1, valuePlaceholders2);
     }
