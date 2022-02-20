@@ -60,6 +60,7 @@ public class CertificatesController {
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.PATCH, produces="application/json")
+    @ResponseStatus(HttpStatus.CREATED)
     public  @ResponseBody CertificateDto updateCertificate(
             @PathVariable("id") long id,
             @RequestBody MultiValueMap<String, String> params) {
