@@ -1,7 +1,7 @@
 package com.epam.esm.controller.api;
 
-//import com.epam.esm.dto.TagDto;
-import com.epam.esm.controller.api.exception.Message;
+//import com.epam.esm.entity.dto.TagDto;
+import com.epam.esm.controller.util.Message;
 import com.epam.esm.controller.api.exception.TagAlreadyExistsException;
 import com.epam.esm.controller.api.exception.TagNotFoundException;
 import com.epam.esm.service.TagsService;

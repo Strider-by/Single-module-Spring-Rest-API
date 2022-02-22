@@ -1,7 +1,7 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.dto.CertificateUpdateDto;
+import com.epam.esm.entity.dto.CertificateDto;
+import com.epam.esm.entity.dto.CertificateUpdateDto;
 import com.epam.esm.entity.Certificate;
 
 import java.util.List;
@@ -18,5 +18,9 @@ public interface CertificateDao {
     CertificateDto update(CertificateUpdateDto dto);
 
     boolean delete(long id);
+
+//    List<CertificateDto> getCertificatesByTagName(String tagName);
+
+    List<CertificateDto> searchCertificates(Map<String, String> parameters);
 
 }

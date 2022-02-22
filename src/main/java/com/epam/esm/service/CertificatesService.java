@@ -1,17 +1,16 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dao.CertificateDao;
-import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.dto.CertificateUpdateDto;
+import com.epam.esm.entity.dto.CertificateDto;
+import com.epam.esm.entity.dto.CertificateUpdateDto;
 import com.epam.esm.entity.Certificate;
-import com.epam.esm.util.DtoConverter;
+import com.epam.esm.entity.util.DtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Component
 public class CertificatesService {
@@ -52,6 +51,14 @@ public class CertificatesService {
 
     public boolean deleteCertificate(long id) {
         return certificateDao.delete(id);
+    }
+
+//    public List<CertificateDto> getCertificatesByTagName(String tagName) {
+//        return certificateDao.getCertificatesByTagName(tagName);
+//    }
+
+    public List<CertificateDto> searchCertificates(Map<String, String> parameters) {
+        return certificateDao.searchCertificates(parameters);
     }
 
 }

@@ -1,18 +1,15 @@
 package com.epam.esm.controller.api;
 
 import com.epam.esm.controller.api.exception.CertificateNotFoundException;
-import com.epam.esm.controller.api.exception.Message;
-import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.dto.CertificateUpdateDto;
+import com.epam.esm.controller.util.Message;
+import com.epam.esm.entity.dto.CertificateDto;
 import com.epam.esm.service.CertificatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/certificates")
@@ -74,6 +71,13 @@ public class CertificatesController {
     }
 
 
+//    @RequestMapping(value="/{tagName}", method=RequestMethod.GET, produces="application/json")
+//    public  @ResponseBody List<CertificateDto> getCertificateByTagName(@PathVariable String tagName) {
+//        List<CertificateDto> searchResult = certificatesService.getCertificatesByTagName(tagName);
+//        return searchResult;
+//    }
+
+
 
     @ExceptionHandler(CertificateNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -81,13 +85,4 @@ public class CertificatesController {
         long id = ex.getCertificateId();
         return new Message(HttpStatus.NOT_FOUND, String.format("Certificate %d can not be found", id));
     }
-
-//    @ExceptionHandler(BadPatchRequestException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public Message noIdFound(CertificateNotFoundException ex) {
-//        return new Message(HttpStatus.BAD_REQUEST, "Request must have an id parameter to be processed");
-//    }
-
-
-
 }
