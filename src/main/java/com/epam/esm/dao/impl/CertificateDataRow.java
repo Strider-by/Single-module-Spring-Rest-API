@@ -1,8 +1,8 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.entity.dto.CertificateDto;
-import com.epam.esm.entity.util.DateConverter;
-import com.epam.esm.entity.util.DtoConverter;
+import com.epam.esm.entity.Certificate;
+//import com.epam.esm.entity.dto.CertificateDto;
+import com.epam.esm.controller.util.DateConverter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,16 +86,16 @@ public class CertificateDataRow {
         this.lastUpdate = lastUpdate;
     }
 
-    public CertificateDto toCertificateDto() {
-        CertificateDto certificateDto = new CertificateDto();
-        certificateDto.setId(this.id);
-        certificateDto.setName(this.name);
-        certificateDto.setDuration(this.duration);
-        certificateDto.setPrice(this.price);
-        certificateDto.setCreated(DateConverter.toISO8601DateString(this.created));
-        certificateDto.setLastUpdate(DateConverter.toISO8601DateString(this.lastUpdate));
-        certificateDto.setDescription(new ArrayList<>());
-        return certificateDto;
+    public Certificate toCertificate() {
+        Certificate certificate = new Certificate();
+        certificate.setId(this.id);
+        certificate.setName(this.name);
+        certificate.setDuration(this.duration);
+        certificate.setPrice(this.price);
+        certificate.setCreateDate(this.created);
+        certificate.setLastUpdateDate(this.lastUpdate);
+        certificate.setDescription(new ArrayList<>());
+        return certificate;
     }
 
 }

@@ -1,13 +1,12 @@
 //package com.epam.esm.dao;
 //
 //import com.epam.esm.controller.api.CertificatesController;
-//import junit.framework.TestCase;
 //import org.springframework.test.web.servlet.MockMvc;
 //import org.springframework.test.web.servlet.MvcResult;
 //import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 //import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 //
-//public class CertificateDaoImplTest extends TestCase {
+//public class CertificateDaoImplTest{
 //
 //    public void testCreate() throws Exception {
 ////        CertificatesController controller = new CertificatesController();
@@ -21,5 +20,7 @@
 //
 //        //System.out.println(mvcResult.getModelAndView().getModel());
 //    }
+//
+//    public void
 //
 //}

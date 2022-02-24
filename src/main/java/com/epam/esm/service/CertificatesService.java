@@ -1,14 +1,17 @@
 package com.epam.esm.service;
 
+import com.epam.esm.controller.api.dto.CertificateDownstreamDto;
+import com.epam.esm.controller.api.dto.CertificateUpstreamDto;
 import com.epam.esm.dao.CertificateDao;
-import com.epam.esm.entity.dto.CertificateDto;
-import com.epam.esm.entity.dto.CertificateUpdateDto;
 import com.epam.esm.entity.Certificate;
+//import com.epam.esm.entity.dto.CertificateDto;
+import com.epam.esm.entity.dto.CertificateUpdateDto;
 import com.epam.esm.entity.util.DtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,21 +25,20 @@ public class CertificatesService {
         this.certificateDao = certificateDao;
     }
 
-    public CertificateDto createCertificate(CertificateDto dto) {
-        Certificate certificate = DtoConverter.toCertificate(dto);
-        certificate.affixCreateTimestamp();
-        return certificateDao.createCertificate(certificate, dto.getDescription());
+    public Certificate createCertificate(CertificateDownstreamDto dto) {
+        Date createdAt = new Date();
+        return certificateDao.createCertificate(dto, createdAt);
     }
 
-    public CertificateDto getCertificate(long id) {
+    public Certificate getCertificate(long id) {
         return certificateDao.getCertificateById(id);
     }
 
-    public List<CertificateDto> getAllCertificates() {
+    public List<Certificate> getAllCertificates() {
         return certificateDao.getAllCertificates();
     }
 
-    public CertificateDto updateCertificate(long id, MultiValueMap<String, String> params) {
+    public Certificate updateCertificate(long id, MultiValueMap<String, String> params) {
         CertificateUpdateDto dto = new CertificateUpdateDto();
 
         dto.setId(id);
@@ -57,7 +59,7 @@ public class CertificatesService {
 //        return certificateDao.getCertificatesByTagName(tagName);
 //    }
 
-    public List<CertificateDto> searchCertificates(Map<String, String> parameters) {
+    public List<Certificate> searchCertificates(Map<String, String> parameters) {
         return certificateDao.searchCertificates(parameters);
     }
 

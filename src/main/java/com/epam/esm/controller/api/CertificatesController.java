@@ -1,8 +1,12 @@
 package com.epam.esm.controller.api;
 
+import com.epam.esm.controller.api.dto.CertificateDownstreamDto;
+import com.epam.esm.controller.api.dto.CertificateUpstreamDto;
 import com.epam.esm.controller.api.exception.CertificateNotFoundException;
+import com.epam.esm.controller.util.DtoConverter;
 import com.epam.esm.controller.util.Message;
-import com.epam.esm.entity.dto.CertificateDto;
+import com.epam.esm.entity.Certificate;
+//import com.epam.esm.entity.dto.CertificateDto;
 import com.epam.esm.service.CertificatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,22 +32,23 @@ public class CertificatesController {
 
     @RequestMapping(method=RequestMethod.GET, produces="application/json")
     public  @ResponseBody
-    List<CertificateDto> getAllCertificates() {
+    List<Certificate> getAllCertificates() {
         return certificatesService.getAllCertificates();
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.GET, produces="application/json")
-    public  @ResponseBody CertificateDto getCertificate(@PathVariable long id) {
-        CertificateDto certificateDto = certificatesService.getCertificate(id);
-        if (certificateDto == null) {
+    public  @ResponseBody Certificate getCertificate(@PathVariable long id) {
+        Certificate certificate = certificatesService.getCertificate(id);
+        if (certificate == null) {
             throw new CertificateNotFoundException(id);
         }
-        return certificateDto;
+        return certificate;
     }
 
     @RequestMapping(method=RequestMethod.POST, produces="application/json")
-    public  @ResponseBody CertificateDto createCertificate(CertificateDto certificateDto) {
-        return certificatesService.createCertificate(certificateDto);
+    public  @ResponseBody
+    CertificateUpstreamDto createCertificate(CertificateDownstreamDto dto) {
+        return DtoConverter.toCertificateUpstreamDto(certificatesService.createCertificate(dto));
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.DELETE, produces="application/json")
@@ -58,16 +63,16 @@ public class CertificatesController {
 
     @RequestMapping(value="/{id}", method=RequestMethod.PATCH, produces="application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public  @ResponseBody CertificateDto updateCertificate(
+    public  @ResponseBody Certificate updateCertificate(
             @PathVariable("id") long id,
             @RequestBody MultiValueMap<String, String> params) {
 
-        CertificateDto certificateDto = certificatesService.updateCertificate(id, params);
-        if (certificateDto == null) {
+        Certificate certificate = certificatesService.updateCertificate(id, params);
+        if (certificate == null) {
             throw new CertificateNotFoundException(id);
         }
 
-        return certificateDto;
+        return certificate;
     }
 
 

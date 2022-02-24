@@ -3,7 +3,8 @@ package com.epam.esm.controller.api;
 import com.epam.esm.controller.api.exception.BadRequestParametersException;
 import com.epam.esm.controller.api.exception.CertificateNotFoundException;
 import com.epam.esm.controller.util.Message;
-import com.epam.esm.entity.dto.CertificateDto;
+import com.epam.esm.entity.Certificate;
+//import com.epam.esm.entity.dto.CertificateDto;
 import com.epam.esm.service.CertificatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class CertificatesSearchController {
 
 
     @RequestMapping(value="**", method=RequestMethod.GET, produces="application/json")
-    public List<CertificateDto> searchCertificatesByPartOfNameOrDescription(HttpServletRequest request)
+    public List<Certificate> searchCertificatesByPartOfNameOrDescription(HttpServletRequest request)
             throws UnsupportedEncodingException{
 
 //        System.out.println("CertificatesSearchController.getAllCertificates");
@@ -62,9 +63,9 @@ public class CertificatesSearchController {
         }
 
         //return certificatesService.searchCertificates(parameters);
-        List<CertificateDto> certificateDtos = certificatesService.searchCertificates(parameters);
+        List<Certificate> certificates = certificatesService.searchCertificates(parameters);
 //        System.out.println(certificateDtos);
-        return certificateDtos;
+        return certificates;
     }
 
     @ExceptionHandler(BadRequestParametersException.class)
