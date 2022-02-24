@@ -1,20 +1,11 @@
 package com.epam.esm.dao.config;
 
-import com.epam.esm.controller.api.CertificatesController;
-import com.epam.esm.controller.api.TagsController;
-import com.epam.esm.dao.CertificateDao;
-import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.impl.CertificateDaoImpl;
-import com.epam.esm.dao.impl.TagDaoImpl;
-import com.epam.esm.service.CertificatesService;
-import com.epam.esm.service.TagsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
