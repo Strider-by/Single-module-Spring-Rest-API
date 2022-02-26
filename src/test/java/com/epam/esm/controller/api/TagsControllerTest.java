@@ -1,6 +1,7 @@
 package com.epam.esm.controller.api;
 
 import com.epam.esm.controller.api.impl.TagsControllerImpl;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagsService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -53,8 +54,8 @@ class TagsControllerTest {
 
     @Test
     void testGetAllTags() {
-        TagsControllerImpl controller = new TagsControllerImpl(service);
-        List<String> expected = Arrays.asList("tag1", "tag2", "tag3", "tag4");
+        TagsController controller = new TagsControllerImpl(service);
+        List<Tag> expected = Arrays.asList(new Tag(), new Tag(), new Tag());
         Mockito.when(service.getAllTags()).thenReturn(expected);
         assertEquals(expected, controller.getAllTags());
     }

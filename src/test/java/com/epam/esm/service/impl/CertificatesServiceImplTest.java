@@ -1,8 +1,9 @@
-package com.epam.esm.service;
+package com.epam.esm.service.impl;
 
 import com.epam.esm.controller.api.dto.CertificateDownstreamDto;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.entity.Certificate;
+import com.epam.esm.service.CertificatesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,7 @@ class CertificatesServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        service = new CertificatesService(dao);
+        service = new CertificatesServiceImpl(dao);
     }
 
     @Test
@@ -50,7 +51,7 @@ class CertificatesServiceTest {
         long id = 7;
         Certificate expected = createCertificateDummy();
 
-        CertificatesService service = new CertificatesService(dao);
+        CertificatesService service = new CertificatesServiceImpl(dao);
         when(dao.getCertificateById(id)).thenReturn(expected);
 
         Certificate actual = service.getCertificate(id);
