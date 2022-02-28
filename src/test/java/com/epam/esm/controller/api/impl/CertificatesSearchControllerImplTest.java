@@ -39,17 +39,15 @@ class CertificatesSearchControllerImplTest {
     @BeforeEach
     void setUp() {
         service = Mockito.mock(CertificatesService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new CertificatesControllerImpl(service))
+        mockMvc = MockMvcBuilders.standaloneSetup(new CertificatesSearchControllerImpl(service))
                 .build();
     }
 
     @Test
     void searchCertificatesByPartOfNameOrDescription() throws Exception {
-        String params = "some/params/to/be/used/to/search";
-        List<Certificate> expected = Arrays.asList(new Certificate(), new Certificate());
-        when(service.searchCertificates(any(Map.class))).thenReturn(expected);
+        String searchString = "contains/what";
 
-        mockMvc.perform(get("/search/{tag}", "tag"))
+        mockMvc.perform(get("/search/{searchString}", searchString))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
