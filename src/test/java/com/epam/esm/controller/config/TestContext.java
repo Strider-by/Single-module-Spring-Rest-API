@@ -27,10 +27,10 @@ public class TestContext {
         return new CertificatesControllerImpl(service);
     }
 
-    @Bean("certificateControllerMock")
-    public CertificatesController certificatesControllerMock(@Qualifier("certificatesServiceMock") CertificatesService service) {
-        return Mockito.mock(CertificatesController.class);
-    }
+//    @Bean("certificateControllerMock")
+//    public CertificatesController certificatesControllerMock(@Qualifier("certificatesServiceMock") CertificatesService service) {
+//        return Mockito.mock(CertificatesController.class);
+//    }
 
 //    @Bean
 //    public CertificatesService certificatesService(CertificateDao dao) {

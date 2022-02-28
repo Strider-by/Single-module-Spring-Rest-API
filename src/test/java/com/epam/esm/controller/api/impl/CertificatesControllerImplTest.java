@@ -1,142 +1,182 @@
 package com.epam.esm.controller.api.impl;
 
-import com.epam.esm.controller.api.CertificatesController;
+import com.epam.esm.ContentStringBuilder;
+import com.epam.esm.controller.api.dto.CertificateDownstreamDto;
 import com.epam.esm.controller.config.TestContext;
 import com.epam.esm.controller.config.WebAppContext;
+import com.epam.esm.entity.Certificate;
+import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.dto.Pair;
 import com.epam.esm.service.CertificatesService;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-//import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.HandlerExceptionResolver;
-import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Properties;
+import java.util.Date;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-//@RunWith(SpringRunner.class)
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestContext.class, WebAppContext.class})
-@ActiveProfiles("dev")
 @WebAppConfiguration
 class CertificatesControllerImplTest {
 
-    //@Autowired
     private MockMvc mockMvc;
-    private CertificatesService mockService;
-//    @Autowired
-//    @Qualifier("certificatesServiceMock")
-//    private  CertificatesService service;
-//    @Autowired
-//    @Qualifier("CertificateControllerMock")
-//    private CertificatesController controller;
+    private CertificatesService service;
 
-//    @Autowired
-//    ApplicationContext context;
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-
-//    @BeforeAll
-//    static void setFields() {
-//        System.out.println("CertificatesControllerImplTest.setFields");
-//    }
 
     @BeforeEach
     void setUp() {
-//        System.out.println("CertificatesControllerImplTest.setUp");
-//        System.out.println(Arrays.toString(context.getBeanDefinitionNames()));
-//        System.out.println(context.getBean("certificatesServiceMock"));
-        //MockMvc mockMvc = new MockMvcBuilder().build();
-        //this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-        mockService = Mockito.mock(CertificatesService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new CertificatesControllerImpl(mockService))
-                .setHandlerExceptionResolvers(exceptionResolver())
-//                .setValidator(new LocalValidatorFactoryBean())
-                //.setViewResolvers(viewResolver())
+        service = Mockito.mock(CertificatesService.class);
+        mockMvc = MockMvcBuilders.standaloneSetup(new CertificatesControllerImpl(service))
                 .build();
     }
 
-    @AfterEach
-    void tearDown() {
-    }
 
     @Test
     void getAllCertificates() throws Exception {
-
-        MvcResult mvcResult = mockMvc.perform(get("/certificates/"))
-                .andDo(MockMvcResultHandlers.print())/*.andExpect(MockMvcResultMatchers.status().isOk())*/
-                .andReturn();
-
-        System.out.println("\n---\n" + mvcResult.getResponse().getContentAsString());
-        mvcResult.getRequest().setCharacterEncoding("UTF-8");
-        System.out.println("\n---\n" + mvcResult.getRequest().getContentAsString());
-        System.out.println("\n---\n" + mvcResult.getResolvedException());
+        mockMvc.perform(get("/certificates/"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    void getCertificate() {
+    void getCertificate_success() throws Exception {
+        long id = 1L;
+        when(service.getCertificate(id)).thenReturn(new Certificate());
+
+        mockMvc.perform(get("/certificates/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
     }
 
     @Test
-    void createCertificate() {
+    void getCertificate_fail_notFound() throws Exception {
+        long id = 404L;
+        mockMvc.perform(get("/certificates/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(HttpStatus.NOT_FOUND.value()));
     }
 
     @Test
-    void deleteCertificate() {
+    void createCertificate() throws Exception {
+        Certificate expected = new Certificate();
+        expected.setCreateDate(new Date());
+        expected.setLastUpdateDate(new Date());
+
+        when(service.createCertificate(any(CertificateDownstreamDto.class))).thenReturn(expected);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/certificates")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .characterEncoding("UTF-8");
+
+        this.mockMvc.perform(builder)
+                .andExpect(status().isCreated())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    void updateCertificate() {
+    void deleteCertificate_success() throws Exception {
+        long id = 1L;
+        boolean expected = true;
+        when(service.deleteCertificate(id)).thenReturn(expected);
+        mockMvc.perform(delete("/certificates/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andDo(print());
     }
 
+    @Test
+    void deleteCertificate_fail_notFound() throws Exception {
+        long id = 404L;
+        boolean expected = false;
+        when(service.deleteCertificate(id)).thenReturn(expected);
+        mockMvc.perform(delete("/certificates/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(HttpStatus.NOT_FOUND.value()));
+    }
+
+    @Test
+    void updateCertificate_success() throws Exception {
+        long id = 1L;
+        String name = "new name";
+        int price = 400;
+
+        when(service.updateCertificate(eq(id), any())).thenReturn(new Certificate());
+
+        String content = new ContentStringBuilder()
+                .add("name", name)
+                .add("price", price)
+                .build();
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/certificates/{id}", id)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .characterEncoding("UTF-8")
+                .content(content);
+
+        this.mockMvc.perform(builder)
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void updateCertificate_fail_notFound() throws Exception {
+        long id = 404L;
+        String name = "new name";
+        int price = 400;
+
+        Certificate expected = null;
+        when(service.updateCertificate(eq(id), any())).thenReturn(expected);
+
+        String content = new ContentStringBuilder()
+                .add("name", name)
+                .add("price", price)
+                .build();
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/certificates/{id}", id)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .characterEncoding("UTF-8")
+                .content(content);
 
 
-    private HandlerExceptionResolver exceptionResolver() {
-        SimpleMappingExceptionResolver exceptionResolver = new SimpleMappingExceptionResolver();
+        this.mockMvc.perform(builder)
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(HttpStatus.NOT_FOUND.value()));
 
-        Properties exceptionMappings = new Properties();
-
-        exceptionMappings.put("com.epam.esm.controller.api.exception.CertificateNotFoundException", "error/404");
-        exceptionMappings.put("java.lang.Exception", "error/error");
-        exceptionMappings.put("java.lang.RuntimeException", "error/error");
-
-        exceptionResolver.setExceptionMappings(exceptionMappings);
-
-        Properties statusCodes = new Properties();
-
-        statusCodes.put("error/404", "404");
-        statusCodes.put("error/error", "500");
-
-        exceptionResolver.setStatusCodes(statusCodes);
-
-        return exceptionResolver;
     }
 
 }
