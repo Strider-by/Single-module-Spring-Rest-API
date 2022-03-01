@@ -14,6 +14,7 @@ public class WebAppContext {
     @Bean
     @Profile("dev")
     @Scope("singleton")
+//    @Scope("prototype")
     public DataSource dataSource() {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)

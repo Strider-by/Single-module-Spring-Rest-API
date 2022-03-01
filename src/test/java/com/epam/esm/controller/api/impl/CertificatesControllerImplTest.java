@@ -79,25 +79,73 @@ class CertificatesControllerImplTest {
 
     @Test
     void createCertificate() throws Exception {
+//        long id = 1L;
+//        String name = "new_name";
+//        int price = 400;
+//
+//        CertificateCreateDto dto = new CertificateCreateDto();
+//        dto.setName(name);
+//        dto.setPrice(price);
+//
+//        Certificate expected = new Certificate();
+//        expected.setId(id);
+//        expected.setName(name);
+//        expected.setPrice(price);
+//        expected.setDuration(33);
+//        expected.setCreateDate(new Date());
+//        expected.setLastUpdateDate(new Date());
+//
+//        String content = new ContentStringBuilder()
+//                .add("name", "name")
+//                .add("price", 11)
+//                .build();
+//
+//        when(service.createCertificate(dto)).thenReturn(expected);
+//
+//        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/certificates/")
+//                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+//                .characterEncoding("UTF-8")
+//                .content(content);
+//
+//        this.mockMvc.perform(builder)
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(status().isCreated())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        long id = 1L;
+        String name = "new_name";
+        int price = 400;
+
+        CertificateCreateDto dto = new CertificateCreateDto();
+        dto.setName(name);
+        dto.setPrice(price);
+
         Certificate expected = new Certificate();
-        expected.setName("name");
-        expected.setDuration(1);
+        expected.setId(id);
+        expected.setName(name);
+        expected.setPrice(price);
+        expected.setDuration(33);
         expected.setCreateDate(new Date());
-        expected.setCreateDate(new Date());
-        expected.setLastUpdateDate(new Date());
         expected.setLastUpdateDate(new Date());
 
-        when(service.createCertificate(any())).thenReturn(expected);
+        when(service.createCertificate(dto)).thenReturn(expected);
+        System.out.println(service.createCertificate(dto));
+
+        String content = new ContentStringBuilder()
+                .add("name", name)
+                .add("price", price)
+                .build();
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/certificates")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .characterEncoding("UTF-8")
-                .content("name=some_name");
+                .content(content);
 
-        this.mockMvc.perform(builder);
-//                .andDo(MockMvcResultHandlers.print())
-//                .andExpect(status().isCreated());
-        //.andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(builder)
+                .andExpect(status().isCreated())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test

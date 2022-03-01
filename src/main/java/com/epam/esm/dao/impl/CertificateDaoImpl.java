@@ -147,10 +147,13 @@ public class CertificateDaoImpl implements CertificateDao {
 //            parameters.put("last_update_date", createdAt);
 //
 //            long certificateId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-            List<String> tagsNames = dto.getDescription().stream()
-                    .map(TagDownstreamDto::getName)
-                    .collect(Collectors.toList());
-            createAndBindTags(certificateId, tagsNames);
+            List<TagDownstreamDto> description = dto.getDescription();
+            if (description != null && !description.isEmpty()) {
+                List<String> tagsNames = description.stream()
+                        .map(TagDownstreamDto::getName)
+                        .collect(Collectors.toList());
+                createAndBindTags(certificateId, tagsNames);
+            }
 
             return getCertificateById(certificateId);
         });

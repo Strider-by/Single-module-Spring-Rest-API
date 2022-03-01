@@ -1,11 +1,17 @@
 package com.epam.esm.controller.config;
 
 import com.epam.esm.controller.api.CertificatesController;
+import com.epam.esm.controller.api.CertificatesSearchController;
+import com.epam.esm.controller.api.TagsController;
 import com.epam.esm.controller.api.impl.CertificatesControllerImpl;
+import com.epam.esm.controller.api.impl.CertificatesSearchControllerImpl;
+import com.epam.esm.controller.api.impl.TagsControllerImpl;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.impl.CertificateDaoImpl;
 import com.epam.esm.service.CertificatesService;
+import com.epam.esm.service.TagsService;
 import com.epam.esm.service.impl.CertificatesServiceImpl;
+import com.epam.esm.service.impl.TagsServiceImpl;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
@@ -20,12 +26,23 @@ import javax.sql.DataSource;
 
 @Configuration
 @Profile("dev")
+@ComponentScan("com.epam.esm")
 public class TestContext {
 
     @Bean
     public CertificatesController certificatesController(CertificatesService service) {
         return new CertificatesControllerImpl(service);
     }
+
+    @Bean
+    public CertificatesSearchController certificatesSearchController(CertificatesService service) {
+        return new CertificatesSearchControllerImpl(service);
+    }
+
+//    @Bean
+//    public TagsController tagsController(TagsService service) {
+//        return new TagsControllerImpl(service);
+//    }
 
 //    @Bean("certificateControllerMock")
 //    public CertificatesController certificatesControllerMock(@Qualifier("certificatesServiceMock") CertificatesService service) {
