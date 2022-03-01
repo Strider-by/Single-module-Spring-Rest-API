@@ -119,6 +119,14 @@ public class CertificateDaoImpl implements CertificateDao {
         this.transactionTemplate = transactionTemplate;
     }
 
+    public CertificateDaoImpl() {
+    }
+
+    public CertificateDaoImpl(JdbcTemplate jdbcTemplate, TransactionTemplate transactionTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.transactionTemplate = transactionTemplate;
+    }
+
     @Override
     public Certificate createCertificate(CertificateCreateDto dto, Date createdAt) {
 

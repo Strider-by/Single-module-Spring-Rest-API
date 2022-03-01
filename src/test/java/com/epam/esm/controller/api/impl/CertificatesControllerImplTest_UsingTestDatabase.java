@@ -4,6 +4,7 @@ import com.epam.esm.ContentStringBuilder;
 import com.epam.esm.controller.api.CertificatesController;
 import com.epam.esm.controller.config.TestContext;
 import com.epam.esm.controller.config.WebAppContext;
+import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.impl.CertificateDaoImpl;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -62,14 +64,8 @@ class CertificatesControllerImplTest_UsingTestDatabase {
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
-    private CertificatesController controller;
-    private CertificatesService service;
-    private CertificateDaoImpl dao;
     @Autowired
-    private DataSource dataSource;
-    private JdbcTemplate jdbcTemplate;
-    private PlatformTransactionManager transactionManager;
-    private TransactionTemplate transactionTemplate;
+    private CertificatesController controller;
 
     private static final int INITIAL_CERTIFICATES_QUANTITY = 4;
 
@@ -116,18 +112,9 @@ class CertificatesControllerImplTest_UsingTestDatabase {
 
     @BeforeEach
     void setUp() {
-//        dataSource = new WebAppContext().dataSource();
-        dataSource = webApplicationContext.getBean(DataSource.class);
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        transactionManager = new DataSourceTransactionManager(dataSource);
-        transactionTemplate = new TransactionTemplate(transactionManager);
 
-        dao = new CertificateDaoImpl();
-        dao.setJdbcTemplate(jdbcTemplate);
-        dao.setTransactionTemplate(transactionTemplate);
-
-        service = new CertificatesServiceImpl(dao);
-        controller = new CertificatesControllerImpl(service);
+//        service = new CertificatesServiceImpl(dao);
+//        controller = new CertificatesControllerImpl(service);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .build();
     }

@@ -7,7 +7,9 @@ import com.epam.esm.controller.api.impl.CertificatesControllerImpl;
 import com.epam.esm.controller.api.impl.CertificatesSearchControllerImpl;
 import com.epam.esm.controller.api.impl.TagsControllerImpl;
 import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.CertificateDaoImpl;
+import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.service.CertificatesService;
 import com.epam.esm.service.TagsService;
 import com.epam.esm.service.impl.CertificatesServiceImpl;
@@ -26,7 +28,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @Profile("dev")
-@ComponentScan("com.epam.esm")
+//@ComponentScan("com.epam.esm")
 public class TestContext {
 
     @Bean
@@ -39,10 +41,20 @@ public class TestContext {
         return new CertificatesSearchControllerImpl(service);
     }
 
-//    @Bean
-//    public TagsController tagsController(TagsService service) {
-//        return new TagsControllerImpl(service);
-//    }
+    @Bean
+    public TagsController tagsController(TagsService service) {
+        return new TagsControllerImpl(service);
+    }
+
+    @Bean
+    public TagsService tagsService(TagDao dao) {
+        return new TagsServiceImpl(dao);
+    }
+
+    @Bean
+    public TagDao tagDao(JdbcTemplate jdbcTemplate) {
+        return new TagDaoImpl(jdbcTemplate);
+    }
 
 //    @Bean("certificateControllerMock")
 //    public CertificatesController certificatesControllerMock(@Qualifier("certificatesServiceMock") CertificatesService service) {
@@ -54,18 +66,38 @@ public class TestContext {
 //        return new CertificatesServiceImpl(dao);
 //    }
 
+//    @Bean("tagsServiceMock")
+//    @Scope("prototype")
+//    public TagsService tagsServiceMock() {
+//        System.out.println("TestContext.tagsServiceMock");
+//        return Mockito.mock(TagsService.class);
+//    }
 
 
-    @Bean("certificatesServiceMock")
-    @Scope("singleton")
-    public CertificatesService certificatesServiceMock() {
-        System.out.println("certificatesServiceMock got");
-        return Mockito.mock(CertificatesService.class);
+
+//    @Bean("certificatesServiceMock")
+//    @Scope("prototype")
+//    @Qualifier("certificatesServiceMock")
+//    public CertificatesService certificatesServiceMock() {
+//        System.out.println("TestContext.certificatesServiceMock");
+//        return Mockito.mock(CertificatesService.class);
+//    }
+
+//    @Bean
+//    @Scope("prototype")
+//    public CertificatesController certificatesController(CertificatesService service) {
+//        return new CertificatesControllerImpl(service);
+//    }
+
+    @Bean
+    @Scope("prototype")
+    public CertificatesService certificatesService(CertificateDao dao) {
+        return new CertificatesServiceImpl(dao);
     }
 
     @Bean
-    public CertificateDao certificateDao() {
-        return new CertificateDaoImpl();
+    public CertificateDao certificateDao(JdbcTemplate jdbcTemplate, TransactionTemplate transactionTemplate) {
+        return new CertificateDaoImpl(jdbcTemplate, transactionTemplate);
     }
 
     @Bean
