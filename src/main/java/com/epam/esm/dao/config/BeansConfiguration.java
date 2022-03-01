@@ -1,7 +1,9 @@
 package com.epam.esm.dao.config;
 
+import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -17,12 +19,12 @@ public class BeansConfiguration {
         System.out.println("BeansConfiguration.static initializer");
     }
 
-    //@Profile("production")
-    @Bean
-    @Scope("singleton")
-    public DataSource dataSource() {
-        return ProductionDatasourceConfig.mysqlDataSource();
-    }
+//    @Profile("production")
+//    @Bean
+//    @Scope("singleton")
+//    public DataSource dataSource() {
+//        return ProductionDatasourceConfig.mysqlDataSource();
+//    }
 
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
@@ -30,51 +32,35 @@ public class BeansConfiguration {
     }
 
     @Bean
-    public TransactionTemplate transactionTemplate() {
-        return new TransactionTemplate(transactionManager());
+    public TransactionTemplate transactionTemplate(PlatformTransactionManager transactionManager) {
+        return new TransactionTemplate(transactionManager);
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(dataSource());
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
         return transactionManager;
     }
 
-
 //    @Bean
-//    public TagsService tagsService(TagDao tagDao) {
-//        return  new TagsService(tagDao);
-//    }
-
-
-//    @Bean
-//    public CertificateDao certificateDao(JdbcTemplate jdbcTemplate) {
-//        return new CertificateDaoImpl(jdbcTemplate);
-//    }
-
-//    @Bean
-//    public TagDao tagDao(JdbcTemplate jdbcTemplate) {
-//        return new TagDaoImpl(jdbcTemplate);
-//    }
-
-//    @Bean
-//    public CertificateDaoImpl certificateDaoImpl(JdbcTemplate jdbcTemplate) {
-//        return new CertificateDaoImpl(jdbcTemplate);
-//    }
-
-//    @Bean
-//    public CertificatesController certificatesController(CertificatesService certificatesService) {
-//        return new CertificatesController(certificatesService);
-//    }
+////    @Profile("production")
+//    @Scope("singleton")
+//    public DataSource dataSource() {
 //
-//    @Bean
-//    public TagsController tagsController(TagsService tagsService) {
-//        return new TagsController(tagsService);
-//    }
-
-//    @Bean
-//    public CertificatesService certificatesService(CertificateDaoImpl dao) {
-//        return new CertificatesService(dao);
+//        PoolProperties p = new PoolProperties();
+//        p.setUrl("jdbc:mysql://localhost:3306/gift_certificates?allowMultiQueries=true");
+//        p.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//        p.setUsername("root");
+//        p.setPassword("AEge101");
+//        p.setInitialSize(10);
+//        p.setMaxActive(100);
+//        p.setJdbcInterceptors(
+//                "org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"
+//                        + "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
+//        org.apache.tomcat.jdbc.pool.DataSource datasource = new org.apache.tomcat.jdbc.pool.DataSource();
+//        datasource.setPoolProperties(p);
+//
+//        return datasource;
 //    }
 
 }

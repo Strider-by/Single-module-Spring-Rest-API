@@ -1,6 +1,6 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.controller.api.dto.CertificateDownstreamDto;
+import com.epam.esm.controller.api.dto.CertificateCreateDto;
 //import com.epam.esm.entity.dto.CertificateDto;
 import com.epam.esm.entity.dto.CertificateUpdateDto;
 import com.epam.esm.entity.Certificate;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 public interface CertificateDao {
 
-    Certificate createCertificate(CertificateDownstreamDto dto, Date createdAt);
+    Certificate createCertificate(CertificateCreateDto dto, Date createdAt);
 
     Certificate getCertificateById(long id);
 

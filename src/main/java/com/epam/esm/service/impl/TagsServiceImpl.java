@@ -1,37 +1,41 @@
-package com.epam.esm.service;
+package com.epam.esm.service.impl;
 
+import com.epam.esm.controller.api.dto.TagDownstreamDto;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.service.TagsService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class TagsService {
+public class TagsServiceImpl implements TagsService {
 
     private TagDao tagDao;
 
-    public TagsService(TagDao tagDao) {
+    public TagsServiceImpl(TagDao tagDao) {
         this.tagDao = tagDao;
     }
 
-    public boolean createTag(String tagName) {
-        return tagDao.create(tagName);
+    @Override
+    public boolean createTag(TagDownstreamDto dto) {
+        return tagDao.create(dto);
     }
 
+    @Override
     public  boolean deleteTag(String tagName) {
         return tagDao.delete(tagName);
     }
 
-    public List<String> getAllTags() {
-        return tagDao.getAll().stream()
-                .map(Tag::getName)
-                .collect(Collectors.toList());
+    @Override
+    public List<Tag> getAllTags() {
+        return tagDao.getAll();
     }
 
-    public String getTag(String tagName) {
-        return tagDao.getByName(tagName).getName();
+    @Override
+    public Tag getTag(String tagName) {
+        return tagDao.getByName(tagName);
     }
 
 }

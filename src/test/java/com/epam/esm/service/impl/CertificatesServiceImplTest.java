@@ -1,6 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.controller.api.dto.CertificateDownstreamDto;
+import com.epam.esm.controller.api.dto.CertificateCreateDto;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.service.CertificatesService;
@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-class CertificatesServiceTest {
+class CertificatesServiceImplTest {
 
     @Mock
     private CertificateDao dao;
@@ -38,7 +38,7 @@ class CertificatesServiceTest {
     void createCertificate() {
 
         Certificate expected = createCertificateDummy();
-        CertificateDownstreamDto dto = createCertificateDownstreamDtoDummy();
+        CertificateCreateDto dto = createCertificateDownstreamDtoDummy();
 
         when(dao.createCertificate(any(), any())).thenReturn(expected);
         Certificate actual = service.createCertificate(dto);
@@ -144,12 +144,12 @@ class CertificatesServiceTest {
         return certificates;
     }
 
-    private CertificateDownstreamDto createCertificateDownstreamDtoDummy() {
+    private CertificateCreateDto createCertificateDownstreamDtoDummy() {
         String name = "name";
         int price = 1000;
         int duration = 12;
 
-        CertificateDownstreamDto dto = new CertificateDownstreamDto();
+        CertificateCreateDto dto = new CertificateCreateDto();
         dto.setName(name);
         dto.setDuration(duration);
         dto.setPrice(price);

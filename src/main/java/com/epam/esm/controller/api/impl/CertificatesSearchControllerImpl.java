@@ -18,9 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/certificates/search")
 public class CertificatesSearchControllerImpl implements CertificatesSearchController {
-
 
     @Autowired
     private CertificatesService certificatesService;
@@ -34,13 +32,17 @@ public class CertificatesSearchControllerImpl implements CertificatesSearchContr
     }
 
 
+
+
     @Override
-    @RequestMapping(value="**", method=RequestMethod.GET, produces="application/json")
     public List<Certificate> searchCertificatesByPartOfNameOrDescription(HttpServletRequest request)
-            throws UnsupportedEncodingException{
+            throws UnsupportedEncodingException {
+
+
+        System.out.println("CertificatesSearchControllerImpl.searchCertificatesByPartOfNameOrDescription");
 
         String[] uriParts = request.getRequestURI().split("/");
-        int partsToSkip = 3;
+        int partsToSkip = 2;
 
         String[] actualParametersPart = new String[uriParts.length - partsToSkip];
         System.arraycopy(uriParts, partsToSkip, actualParametersPart, 0, actualParametersPart.length);
@@ -64,15 +66,14 @@ public class CertificatesSearchControllerImpl implements CertificatesSearchContr
 
         }
 
-        //return certificatesService.searchCertificates(parameters);
         List<Certificate> certificates = certificatesService.searchCertificates(parameters);
-//        System.out.println(certificateDtos);
+
         return certificates;
     }
 
     @ExceptionHandler(BadRequestParametersException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Message certificateNotFound(BadRequestParametersException ex) {
+    private Message badRequestFound(BadRequestParametersException ex) {
         return new Message(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
@@ -139,4 +140,10 @@ public class CertificatesSearchControllerImpl implements CertificatesSearchContr
         }
 
     }
+
+//    @Override
+//    public Certificate testSearch(String tag) {
+//        System.out.println("CertificatesSearchControllerImpl.testSearch");
+//        return new Certificate();
+//    }
 }

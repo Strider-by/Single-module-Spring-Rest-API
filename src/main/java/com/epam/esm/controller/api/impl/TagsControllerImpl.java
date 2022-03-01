@@ -1,18 +1,21 @@
 package com.epam.esm.controller.api.impl;
 
 import com.epam.esm.controller.api.TagsController;
+import com.epam.esm.controller.api.dto.TagDownstreamDto;
 import com.epam.esm.controller.api.exception.TagAlreadyExistsException;
 import com.epam.esm.controller.api.exception.TagNotFoundException;
 import com.epam.esm.controller.util.Message;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/tags")
+//@Controller
 public class TagsControllerImpl implements TagsController {
 
     static {
@@ -27,35 +30,32 @@ public class TagsControllerImpl implements TagsController {
     }
 
     @Override
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    List<String> getAllTags() {
+    public List<Tag> getAllTags() {
         return tagsService.getAllTags();
     }
 
     @Override
-    @RequestMapping(value = "/{name}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    String getTag(@PathVariable String name) {
-        return tagsService.getTag(name);
+    public Tag getTag(String name) {
+        Tag tag =  tagsService.getTag(name);
+        if (tag == null) {
+            throw new TagNotFoundException(name);
+        }
+        return tag;
     }
 
     @Override
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody
-    Message createTag(String name) {
-        boolean created = tagsService.createTag(name);
+    public Message createTag(TagDownstreamDto dto) {
+        boolean created = tagsService.createTag(dto);
+        String name = dto.getName();
         if (!created) {
             throw new TagAlreadyExistsException(name);
         }
 
-        return new Message(HttpStatus.OK, String.format("Tag '%s' has been created", name));
+        return new Message(HttpStatus.CREATED, String.format("Tag '%s' has been created", name));
     }
 
     @Override
-    @RequestMapping(value = "/{name}", method = RequestMethod.DELETE, produces = "application/json")
-    public @ResponseBody
-    Message deleteTag(@PathVariable String name) {
+    public Message deleteTag(String name) {
         boolean deleted = tagsService.deleteTag(name);
         if (!deleted) {
             throw new TagNotFoundException(name);
@@ -67,14 +67,18 @@ public class TagsControllerImpl implements TagsController {
 
     @ExceptionHandler(TagNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Message tagNotFound(TagNotFoundException ex) {
+    @RequestMapping(produces = "application/json")
+//    @ResponseBody
+    private Message tagNotFound(TagNotFoundException ex) {
+        System.out.println("TagsControllerImpl.tagNotFound");
         String tagName = ex.getTagName();
         return new Message(HttpStatus.NOT_FOUND, String.format("Tag '%s' can not be found", tagName));
     }
 
     @ExceptionHandler(TagAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Message tagAlreadyExist(TagAlreadyExistsException ex) {
+//    @RequestMapping(produces = "application/json")
+    private Message tagAlreadyExist(TagAlreadyExistsException ex) {
         String tagName = ex.getTagName();
         return new Message(HttpStatus.CONFLICT, String.format("Tag '%s' already exists", tagName));
     }

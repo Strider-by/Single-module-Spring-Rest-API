@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.controller.api.dto.TagDownstreamDto;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,8 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public boolean create(String name) {
+    public boolean create(TagDownstreamDto dto) {
+        String name = dto.getName();
         return jdbcTemplate.update(CREATE_INSTANCE, name) == 1;
     }
 
@@ -70,7 +72,7 @@ public class TagDaoImpl implements TagDao {
         public Tag mapRow(ResultSet rs, int rowNum) throws SQLException {
             Tag tag = new Tag();
             tag.setName(rs.getString("name"));
-            tag.setId(rs.getInt("id"));
+            tag.setId(rs.getLong("id"));
             return tag;
         }
 

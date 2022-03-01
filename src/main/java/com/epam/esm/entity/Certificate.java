@@ -9,8 +9,8 @@ public class Certificate {
     private long id;
     private String name;
     private List<Tag> description;
-    private int price;
-    private int duration;
+    private Integer price;
+    private Integer duration;
     private Date createDate;
     private Date lastUpdateDate;
 
@@ -52,19 +52,19 @@ public class Certificate {
         this.description = description;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
@@ -84,9 +84,9 @@ public class Certificate {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public void addToDescription(Tag tag) {
-        this.description.add(tag);
-    }
+//    public void addToDescription(Tag tag) {
+//        this.description.add(tag);
+//    }
 
     public void affixCreateTimestamp() {
         this.createDate = new Date();
@@ -95,6 +95,20 @@ public class Certificate {
 
     public void affixUpdateTimestamp() {
         this.lastUpdateDate = new Date();
+    }
+
+
+    @Override
+    public String toString() {
+        return "Certificate{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description=" + description +
+                ", price=" + price +
+                ", duration=" + duration +
+                ", createDate=" + createDate +
+                ", lastUpdateDate=" + lastUpdateDate +
+                '}';
     }
 
 }

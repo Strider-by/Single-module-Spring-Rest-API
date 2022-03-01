@@ -1,2 +1,23 @@
-package com.epam.esm;public class ContentStringBuilder {
+package com.epam.esm;
+
+import com.epam.esm.entity.dto.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ContentStringBuilder {
+    private List<Pair<String, Object>> chunks = new ArrayList<>();
+
+    public ContentStringBuilder add(String name, Object value) {
+        chunks.add(new Pair<>(name, value));
+        return this;
+    }
+
+    public String build() {
+        return chunks.stream()
+                .map(pair -> String.format("%s=%s", pair.getFirstValue(), pair.getSecondValue().toString()))
+                .reduce((part1, part2) -> String.join("&", part1, part2))
+                .orElse("");
+    }
+
 }

@@ -1,26 +1,28 @@
 package com.epam.esm.controller.api;
 
+import com.epam.esm.controller.api.dto.TagDownstreamDto;
 import com.epam.esm.controller.util.Message;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import com.epam.esm.entity.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/tags")
 public interface TagsController {
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    List<String> getAllTags();
+    List<Tag> getAllTags();
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    String getTag(@PathVariable String name);
+    Tag getTag(@PathVariable String name);
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    Message createTag(String name);
+    @ResponseStatus(HttpStatus.CREATED)
+    Message createTag(TagDownstreamDto tag);
 
     @RequestMapping(value = "/{name}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseBody

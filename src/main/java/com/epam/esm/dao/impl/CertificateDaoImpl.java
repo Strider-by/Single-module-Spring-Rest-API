@@ -1,6 +1,6 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.controller.api.dto.CertificateDownstreamDto;
+import com.epam.esm.controller.api.dto.CertificateCreateDto;
 import com.epam.esm.controller.api.dto.TagDownstreamDto;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.entity.Tag;
@@ -8,11 +8,11 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.dto.CertificateUpdateDto;
 import com.epam.esm.entity.dto.Pair;
 import com.epam.esm.entity.Certificate;
-import com.epam.esm.entity.util.DtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -27,7 +27,8 @@ import java.util.stream.Stream;
 public class CertificateDaoImpl implements CertificateDao {
 
     private static final String CHECK_IF_CERTIFICATE_EXISTS =
-            "SELECT COUNT(id) FROM gift_certificate WHERE id = ? > 0";
+//            "SELECT (COUNT(id) FROM gift_certificate WHERE id = ?) > 0";
+    "SELECT (SELECT COUNT(id) FROM gift_certificate WHERE id = ?) > 0";
 
     private static final String GET_CERTIFICATE =
             "SELECT * FROM gift_certificate WHERE id = ?";
@@ -119,7 +120,8 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public Certificate createCertificate(CertificateDownstreamDto dto, Date createdAt) {
+    public Certificate createCertificate(CertificateCreateDto dto, Date createdAt) {
+
         return transactionTemplate.execute(status -> {
 
             jdbcTemplate.update(CREATE_CERTIFICATE,
@@ -131,6 +133,20 @@ public class CertificateDaoImpl implements CertificateDao {
             );
 
             long certificateId = jdbcTemplate.queryForObject(GET_LAST_CREATED_ID, Long.class);
+
+//            SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+//                    .withTableName("gift_certificate")
+//                    //.usingColumns("name", "price", "duration", "create_date", "last_update_date")
+//                    .usingGeneratedKeyColumns("id");
+//
+//            Map<String, Object> parameters = new HashMap<>();
+//            parameters.put("name", dto.getName());
+//            parameters.put("price", dto.getPrice());
+//            parameters.put("duration", dto.getDuration());
+//            parameters.put("create_date", createdAt);
+//            parameters.put("last_update_date", createdAt);
+//
+//            long certificateId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
             List<String> tagsNames = dto.getDescription().stream()
                     .map(TagDownstreamDto::getName)
                     .collect(Collectors.toList());
@@ -210,9 +226,11 @@ public class CertificateDaoImpl implements CertificateDao {
             parametersToChange.add("last_update_date");
             lastUpdate = dto.getLastUpdate();
             String queryString = buildUpdateCertificateQuery(parametersToChange.toArray(new String[0]));
+            System.out.println(":::\nquery\n:::" + queryString + ":::\n\n:::");
             Object[] params = Stream.of(name, price, duration, lastUpdate, dto.getId())
                     .filter(Objects::nonNull)
                     .toArray();
+            System.out.println(":::\nparams\n:::" + Arrays.toString(params) + ":::\n\n:::");
 
             jdbcTemplate.update(queryString, params);
             replaceTagsOnCertificateUpdate(dto);

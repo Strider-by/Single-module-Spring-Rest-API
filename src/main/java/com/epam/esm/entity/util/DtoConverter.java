@@ -1,12 +1,6 @@
 package com.epam.esm.entity.util;
 
-import com.epam.esm.controller.api.dto.CertificateDownstreamDto;
-import com.epam.esm.controller.api.dto.CertificateUpstreamDto;
-import com.epam.esm.controller.util.DateConverter;
-import com.epam.esm.entity.Certificate;
-import com.epam.esm.entity.Tag;
-
-import java.util.stream.Collectors;
+import com.epam.esm.controller.api.dto.TagDownstreamDto;
 
 public class DtoConverter {
 
@@ -59,6 +53,8 @@ public class DtoConverter {
 //        return tag;
 //    }
 
-//    public static to
+    public static TagDownstreamDto toTagDownstreamDto(String tagName) {
+        return new TagDownstreamDto(tagName);
+    }
 
 }

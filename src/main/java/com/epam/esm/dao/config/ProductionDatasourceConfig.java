@@ -1,21 +1,23 @@
 package com.epam.esm.dao.config;
 
 import org.apache.tomcat.jdbc.pool.PoolProperties;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
 
 import javax.sql.DataSource;
 
 @Configuration
-//@ComponentScan("com.epam.esm")
 public class ProductionDatasourceConfig {
 
-    @Profile("production")
     @Bean
+    @Profile("production")
     @Scope("singleton")
-    public static DataSource mysqlDataSource() {
+    public DataSource mysqlDataSource() {
 
         PoolProperties p = new PoolProperties();
-        p.setUrl("jdbc:mysql://localhost:3306/gift_certificates?allowMultiQueries=true");
+        p.setUrl("jdbc:mysql://localhost:3306/certificates_for_test?allowMultiQueries=true");
         p.setDriverClassName("com.mysql.cj.jdbc.Driver");
         p.setUsername("root");
         p.setPassword("AEge101");

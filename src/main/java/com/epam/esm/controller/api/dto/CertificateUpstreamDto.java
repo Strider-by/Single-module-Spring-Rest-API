@@ -8,8 +8,8 @@ public class CertificateUpstreamDto {
     private Long id;
     private String name;
     private List<String> description;
-    private int price;
-    private int duration;
+    private Integer price;
+    private Integer duration;
     private String created;
     private String lastUpdate;
 
