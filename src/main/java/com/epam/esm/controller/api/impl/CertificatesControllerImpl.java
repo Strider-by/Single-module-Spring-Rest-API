@@ -11,15 +11,15 @@ import com.epam.esm.service.CertificatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
 @RestController
 public class CertificatesControllerImpl implements CertificatesController {
-
-    static {
-        System.out.println("CertificatesController.static initializer");
-    }
 
     @Autowired
     private CertificatesService certificatesService;
@@ -37,8 +37,6 @@ public class CertificatesControllerImpl implements CertificatesController {
 
     @Override
     public List<Certificate> getAllCertificates() {
-        System.out.println("CertificatesControllerImpl.getAllCertificates");
-        System.out.println("remote service:\n" + this.certificatesService);
         return certificatesService.getAllCertificates();
     }
 
@@ -53,7 +51,6 @@ public class CertificatesControllerImpl implements CertificatesController {
 
     @Override
     public CertificateUpstreamDto createCertificate(CertificateCreateDto dto) {
-//        System.out.println("actual dto\n" + dto);
         return DtoConverter.toCertificateUpstreamDto(certificatesService.createCertificate(dto));
     }
 

@@ -28,5 +28,6 @@ public class Pair<S, U> {
     public void setSecondValue(U secondValue) {
         this.secondValue = secondValue;
     }
+
 }
 

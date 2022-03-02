@@ -30,7 +30,6 @@ class TagsServiceImplTest {
         service = new TagsServiceImpl(dao);
     }
 
-
     @Test
     void createTag_success() {
         boolean expected = true;

@@ -65,7 +65,6 @@ public class TagDaoImpl implements TagDao {
     }
 
 
-
     private static class TagRowMapper implements RowMapper<Tag> {
 
         @Override

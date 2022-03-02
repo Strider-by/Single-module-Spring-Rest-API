@@ -7,7 +7,9 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.service.CertificatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -21,25 +23,17 @@ import java.util.Map;
 public class CertificatesSearchControllerImpl implements CertificatesSearchController {
 
     @Autowired
-    private CertificatesService certificatesService;
-
-    static {
-        System.out.println("CertificatesSearchController.static initializer");
-    }
+    private final CertificatesService certificatesService;
 
     public CertificatesSearchControllerImpl(CertificatesService certificatesService) {
         this.certificatesService = certificatesService;
     }
 
 
-
-
     @Override
     public List<Certificate> searchCertificatesByPartOfNameOrDescription(HttpServletRequest request)
             throws UnsupportedEncodingException {
 
-
-        System.out.println("CertificatesSearchControllerImpl.searchCertificatesByPartOfNameOrDescription");
 
         String[] uriParts = request.getRequestURI().split("/");
         int partsToSkip = 2;
@@ -54,7 +48,7 @@ public class CertificatesSearchControllerImpl implements CertificatesSearchContr
         Map<String, String> parameters = new HashMap<>();
         for (int i = 0; i < actualParametersPart.length - 1; i += 2) {
             String paramName = URLDecoder.decode(actualParametersPart[i].toLowerCase(), "utf-8");
-            String paramValue = URLDecoder.decode(actualParametersPart[i+1].toLowerCase(), "utf-8");
+            String paramValue = URLDecoder.decode(actualParametersPart[i + 1].toLowerCase(), "utf-8");
 
             boolean isValidParameter = SearchParameterVerifier.isAllowedNameValueParameter(paramName, paramValue);
             if (!isValidParameter) {
@@ -79,35 +73,35 @@ public class CertificatesSearchControllerImpl implements CertificatesSearchContr
 
     private enum SearchParameterVerifier {
 
-        TAG ("tag") {
+        TAG("tag") {
             @Override
             public boolean isAllowedParameterValue(String value) {
                 return true;
             }
         },
 
-        CONTAINS ("contains") {
+        CONTAINS("contains") {
             @Override
             public boolean isAllowedParameterValue(String value) {
                 return true;
             }
         },
 
-        SORT_BY ("sort_by", Arrays.asList("date", "name")) {
+        SORT_BY("sort_by", Arrays.asList("date", "name")) {
             @Override
             public boolean isAllowedParameterValue(String value) {
                 return this.allowedParamValues.contains(value.toLowerCase());
             }
         },
 
-        ORDER ("order", Arrays.asList("asc", "desc")) {
+        ORDER("order", Arrays.asList("asc", "desc")) {
             @Override
             public boolean isAllowedParameterValue(String value) {
                 return this.allowedParamValues.contains(value.toLowerCase());
             }
         },
 
-        DEFAULT ("") {
+        DEFAULT("") {
             @Override
             public boolean isAllowedParameterValue(String value) {
                 return false;
@@ -126,8 +120,6 @@ public class CertificatesSearchControllerImpl implements CertificatesSearchContr
             this.allowedParamValues = allowedParamValues;
         }
 
-        public abstract boolean isAllowedParameterValue(String value);
-
         public static boolean isAllowedNameValueParameter(String paramName, String paramValue) {
             return getParameterVerifier(paramName).isAllowedParameterValue(paramValue);
         }
@@ -139,11 +131,8 @@ public class CertificatesSearchControllerImpl implements CertificatesSearchContr
                     .orElse(DEFAULT);
         }
 
+        public abstract boolean isAllowedParameterValue(String value);
+
     }
 
-//    @Override
-//    public Certificate testSearch(String tag) {
-//        System.out.println("CertificatesSearchControllerImpl.testSearch");
-//        return new Certificate();
-//    }
 }

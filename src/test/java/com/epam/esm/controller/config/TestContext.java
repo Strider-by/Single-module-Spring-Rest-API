@@ -14,13 +14,12 @@ import com.epam.esm.service.CertificatesService;
 import com.epam.esm.service.TagsService;
 import com.epam.esm.service.impl.CertificatesServiceImpl;
 import com.epam.esm.service.impl.TagsServiceImpl;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -28,7 +27,6 @@ import javax.sql.DataSource;
 
 @Configuration
 @Profile("dev")
-//@ComponentScan("com.epam.esm")
 public class TestContext {
 
     @Bean
@@ -56,38 +54,6 @@ public class TestContext {
         return new TagDaoImpl(jdbcTemplate);
     }
 
-//    @Bean("certificateControllerMock")
-//    public CertificatesController certificatesControllerMock(@Qualifier("certificatesServiceMock") CertificatesService service) {
-//        return Mockito.mock(CertificatesController.class);
-//    }
-
-//    @Bean
-//    public CertificatesService certificatesService(CertificateDao dao) {
-//        return new CertificatesServiceImpl(dao);
-//    }
-
-//    @Bean("tagsServiceMock")
-//    @Scope("prototype")
-//    public TagsService tagsServiceMock() {
-//        System.out.println("TestContext.tagsServiceMock");
-//        return Mockito.mock(TagsService.class);
-//    }
-
-
-
-//    @Bean("certificatesServiceMock")
-//    @Scope("prototype")
-//    @Qualifier("certificatesServiceMock")
-//    public CertificatesService certificatesServiceMock() {
-//        System.out.println("TestContext.certificatesServiceMock");
-//        return Mockito.mock(CertificatesService.class);
-//    }
-
-//    @Bean
-//    @Scope("prototype")
-//    public CertificatesController certificatesController(CertificatesService service) {
-//        return new CertificatesControllerImpl(service);
-//    }
 
     @Bean
     @Scope("prototype")

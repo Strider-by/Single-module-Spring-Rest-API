@@ -7,12 +7,11 @@ import com.epam.esm.service.TagsService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class TagsServiceImpl implements TagsService {
 
-    private TagDao tagDao;
+    private final TagDao tagDao;
 
     public TagsServiceImpl(TagDao tagDao) {
         this.tagDao = tagDao;
@@ -24,7 +23,7 @@ public class TagsServiceImpl implements TagsService {
     }
 
     @Override
-    public  boolean deleteTag(String tagName) {
+    public boolean deleteTag(String tagName) {
         return tagDao.delete(tagName);
     }
 

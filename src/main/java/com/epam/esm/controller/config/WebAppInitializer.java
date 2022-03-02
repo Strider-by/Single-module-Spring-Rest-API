@@ -1,7 +1,6 @@
 package com.epam.esm.controller.config;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.ServletContext;
@@ -9,10 +8,6 @@ import javax.servlet.ServletException;
 
 @Controller
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
-
-    static {
-        System.out.println("WebAppInitializer has been created");
-    }
 
     @Override
     protected String[] getServletMappings() {
@@ -34,6 +29,5 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         servletContext.setInitParameter("spring.profiles.active", "production");
         super.onStartup(servletContext);
     }
-
 
 }

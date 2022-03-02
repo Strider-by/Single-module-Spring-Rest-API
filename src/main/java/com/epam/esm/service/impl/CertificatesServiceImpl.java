@@ -17,7 +17,7 @@ import java.util.Map;
 public class CertificatesServiceImpl implements CertificatesService {
 
     @Autowired
-    private CertificateDao certificateDao;
+    private final CertificateDao certificateDao;
 
     public CertificatesServiceImpl(CertificateDao certificateDao) {
         this.certificateDao = certificateDao;
@@ -25,7 +25,6 @@ public class CertificatesServiceImpl implements CertificatesService {
 
     @Override
     public Certificate createCertificate(CertificateCreateDto dto) {
-        System.out.println("CertificatesServiceImpl.createCertificate");
         Date createdAt = new Date();
         return certificateDao.createCertificate(dto, createdAt);
     }
@@ -37,7 +36,6 @@ public class CertificatesServiceImpl implements CertificatesService {
 
     @Override
     public List<Certificate> getAllCertificates() {
-        System.err.print("CertificatesServiceImpl.getAllCertificates");
         return certificateDao.getAllCertificates();
     }
 

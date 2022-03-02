@@ -18,7 +18,8 @@ public class Certificate {
         this.description = new ArrayList<>();
     }
 
-    public Certificate(long id, String name, List<Tag> description, int price, int duration, Date createDate, Date lastUpdateDate) {
+    public Certificate(
+            long id, String name, List<Tag> description, int price, int duration, Date createDate, Date lastUpdateDate) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -83,20 +84,6 @@ public class Certificate {
     public void setLastUpdateDate(Date lastUpdateDate) {
         this.lastUpdateDate = lastUpdateDate;
     }
-
-//    public void addToDescription(Tag tag) {
-//        this.description.add(tag);
-//    }
-
-    public void affixCreateTimestamp() {
-        this.createDate = new Date();
-        this.lastUpdateDate = createDate;
-    }
-
-    public void affixUpdateTimestamp() {
-        this.lastUpdateDate = new Date();
-    }
-
 
     @Override
     public String toString() {

@@ -9,18 +9,15 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-//@Controller
 public class TagsControllerImpl implements TagsController {
-
-    static {
-        System.out.println("TagsController.static initializer");
-    }
 
     @Autowired
     private final TagsService tagsService;
@@ -36,7 +33,7 @@ public class TagsControllerImpl implements TagsController {
 
     @Override
     public Tag getTag(String name) {
-        Tag tag =  tagsService.getTag(name);
+        Tag tag = tagsService.getTag(name);
         if (tag == null) {
             throw new TagNotFoundException(name);
         }
@@ -67,17 +64,14 @@ public class TagsControllerImpl implements TagsController {
 
     @ExceptionHandler(TagNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @RequestMapping(produces = "application/json")
-//    @ResponseBody
+    @RequestMapping(produces = "application/json") // todo do i need this?
     private Message tagNotFound(TagNotFoundException ex) {
-        System.out.println("TagsControllerImpl.tagNotFound");
         String tagName = ex.getTagName();
         return new Message(HttpStatus.NOT_FOUND, String.format("Tag '%s' can not be found", tagName));
     }
 
     @ExceptionHandler(TagAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-//    @RequestMapping(produces = "application/json")
     private Message tagAlreadyExist(TagAlreadyExistsException ex) {
         String tagName = ex.getTagName();
         return new Message(HttpStatus.CONFLICT, String.format("Tag '%s' already exists", tagName));

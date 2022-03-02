@@ -33,7 +33,6 @@ public class CertificateUpdateDto {
     }
 
     public void setDescription(List<String> description) {
-        System.out.println("setting description");
         this.description = description;
     }
 

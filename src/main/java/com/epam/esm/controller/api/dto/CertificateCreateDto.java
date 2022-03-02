@@ -47,7 +47,8 @@ public class CertificateCreateDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CertificateCreateDto dto = (CertificateCreateDto) o;
-        return price == dto.price && duration == dto.duration && Objects.equals(name, dto.name) && Objects.equals(description, dto.description);
+        return price == dto.price && duration == dto.duration && Objects.equals(name, dto.name)
+                && Objects.equals(description, dto.description);
     }
 
     @Override

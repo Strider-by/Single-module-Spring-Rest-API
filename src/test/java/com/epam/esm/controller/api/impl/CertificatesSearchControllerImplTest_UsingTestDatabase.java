@@ -3,11 +3,9 @@ package com.epam.esm.controller.api.impl;
 import com.epam.esm.controller.api.CertificatesSearchController;
 import com.epam.esm.controller.config.TestContext;
 import com.epam.esm.controller.config.WebAppContext;
-import com.epam.esm.service.CertificatesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,7 +42,6 @@ class CertificatesSearchControllerImplTest_UsingTestDatabase {
         String searchString = "contains/what";
 
         mockMvc.perform(get("/search/{searchString}", searchString))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
@@ -54,7 +51,6 @@ class CertificatesSearchControllerImplTest_UsingTestDatabase {
         String searchString = "contains/what/wrong";
 
         mockMvc.perform(get("/search/{searchString}", searchString))
-                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()));

@@ -109,7 +109,7 @@ class CertificatesServiceImplTest {
     }
 
 
-    private Certificate createCertificateDummy() {
+    private Certificate createCertificateDummy() { // todo: to class
         String name = "name";
         int price = 1000;
         int duration = 12;
@@ -122,7 +122,7 @@ class CertificatesServiceImplTest {
         return dummy;
     }
 
-    private List<Certificate> createListOfCertificateDummy() {
+    private List<Certificate> createListOfCertificateDummy() { // todo: to class
         List<Certificate> certificates = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
@@ -144,7 +144,7 @@ class CertificatesServiceImplTest {
         return certificates;
     }
 
-    private CertificateCreateDto createCertificateDownstreamDtoDummy() {
+    private CertificateCreateDto createCertificateDownstreamDtoDummy() { // todo: to class
         String name = "name";
         int price = 1000;
         int duration = 12;
